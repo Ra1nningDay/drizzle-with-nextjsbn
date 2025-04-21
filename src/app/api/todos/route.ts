@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/db.ts";
+import { db } from "../../../lib/db";
 import { todoTable } from "@/db/schema";
 import { z } from "zod";
 
@@ -9,11 +9,11 @@ const createTodoDTO = z.object({
   completed: z.boolean(),
 });
 
-type Todo = {
+interface Todo {
   id: number;
   name: string;
   completed: boolean;
-};
+}
 
 export async function GET() {
   try {

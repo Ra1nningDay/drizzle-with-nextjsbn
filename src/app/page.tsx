@@ -1,9 +1,16 @@
 "use client";
 
-import { useTodo } from "@/hooks/useTodoHook";
+import { fetchTodoList } from "@/lib/apiTodos";
+import useTodoStore from "@/store/storeTodo";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
-  const { todos, newTodo, setNewTodo, handleAddTodo, removeTodo } = useTodo();
+  const { data, isLoading, error } = useQuery(["todos"], fetchTodoList);
+  const { newTodo, setNewTodo } = useTodoStore();
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (error) return <div>Error: {error.message}</div>;
   return (
     <>
       <h1>Todo List</h1>
@@ -18,7 +25,7 @@ export default function Home() {
       </button>
 
       <ul>
-        {todos.map((todo, index) => (
+        {data.map((todo, index) => (
           <li key={index}>
             {todo.id}.{todo.title}
             <button
