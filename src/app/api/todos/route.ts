@@ -9,12 +9,6 @@ const createTodoDTO = z.object({
   completed: z.boolean(),
 });
 
-interface Todo {
-  id: number;
-  name: string;
-  completed: boolean;
-}
-
 export async function GET() {
   try {
     const todos = await db.select().from(todoTable);
@@ -27,7 +21,7 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request): Promise<Todo[]> {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { name, completed } = createTodoDTO.parse(body);
