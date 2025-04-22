@@ -1,23 +1,12 @@
 import { create } from "zustand";
-
-interface Todo {
-  id: number;
-  title: string;
-}
+import { Todo } from "@/types";
 
 const useTodoStore = create<{
   todos: Todo[];
-  addTodo: (todo: Todo) => void;
-  removeTodo: (index: number) => void;
+  setTodos: (todo: Todo[]) => void;
 }>((set) => ({
   todos: [],
-  addTodo: (todo) => set((state) => ({ todos: [...state.todos, todo] })),
-  removeTodo: (index) =>
-    set((state) => {
-      const newTodos = [...state.todos];
-      newTodos.splice(index, 1);
-      return { todos: newTodos };
-    }),
+  setTodos: (todos) => set({ todos }),
 }));
 
 export default useTodoStore;
