@@ -13,6 +13,7 @@ export const useTodo = () => {
     // State for input and error
     const [newTodo, setNewTodo] = useState<string>("");
     const [mutationError, setMutationError] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
 
     // QueryClient for invalidating queries
     const queryClient = useQueryClient();
@@ -25,6 +26,12 @@ export const useTodo = () => {
     } = useQuery({
         queryKey: ["todos"],
         queryFn: fetchTodoList,
+        select: (data: Todo[]) => {
+            // Sort todos based on sortOrder
+            return [...data].sort((a, b) => {
+                return sortOrder === "latest" ? b.id - a.id : a.id - b.id;
+            });
+        },
     });
 
     // Mutation for adding a todo
@@ -89,6 +96,10 @@ export const useTodo = () => {
         queryClient.setQueryData(["todos"], updatedTodos);
     };
 
+    const toggleSortOrder = () => {
+        setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
+    };
+
     // Return everything needed for the UI
     return {
         todos,
@@ -101,5 +112,7 @@ export const useTodo = () => {
         handleDeleteTodo,
         completedTask,
         toggleTask,
+        sortOrder,
+        toggleSortOrder,
     };
 };

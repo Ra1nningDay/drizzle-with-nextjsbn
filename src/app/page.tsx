@@ -9,7 +9,15 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Moon, Sun, Trash2, Plus, Loader2, SquarePen } from "lucide-react";
+import {
+    Moon,
+    Sun,
+    Trash2,
+    Plus,
+    Loader2,
+    SquarePen,
+    ChevronDown,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -27,6 +35,8 @@ export default function Home() {
         mutationError,
         completedTask,
         toggleTask,
+        sortOrder,
+        toggleSortOrder,
     } = useTodo();
 
     useEffect(() => {
@@ -125,9 +135,21 @@ export default function Home() {
                     <CardHeader>
                         <div className="flex justify-between items-center">
                             <CardTitle>Tasks</CardTitle>
-                            <Badge variant="outline">
-                                {todos?.length || 0} items
-                            </Badge>
+                            <div className="flex gap-3">
+                                <button
+                                    className="flex gap-1 cursor-pointer"
+                                    onClick={toggleSortOrder}
+                                >
+                                    Sort:{" "}
+                                    {sortOrder === "latest"
+                                        ? "Latest First"
+                                        : "Oldest First"}
+                                    <ChevronDown />
+                                </button>
+                                <Badge variant="outline">
+                                    {todos?.length || 0} items
+                                </Badge>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
