@@ -20,9 +20,9 @@ export default function Home() {
 
     useEffect(() => {
         if (mode === "darkMode") {
-            document.body.classList.add("dark");
+            document.documentElement.classList.add("dark");
         } else {
-            document.body.classList.remove("dark");
+            document.documentElement.classList.remove("dark");
         }
     }, [mode]);
 
@@ -34,7 +34,7 @@ export default function Home() {
         return <div>Error fetching todos: {error.message}</div>;
     }
     return (
-        <div className="min-h-screen p-4">
+        <div className="min-h-screen dark:bg-black dark:text-white p-4">
             <button onClick={toggleMode} className="cursor-pointer border-1">
                 {mode === "darkMode" ? "Light Mode" : "Dark Mode"}
             </button>
@@ -45,6 +45,7 @@ export default function Home() {
                 value={newTodo}
                 onChange={(e) => setNewTodo(e.target.value)}
                 placeholder="Add New Todo"
+                className="dark:text-3xl"
             />
             <button onClick={handleAddTodo} className="cursor-pointer">
                 Add Todo

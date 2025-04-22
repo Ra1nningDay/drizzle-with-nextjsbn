@@ -1,15 +1,6 @@
 @import "tailwindcss";
 
-:root {
-    --background: #ffffff; /* สีพื้นหลังในโหมดสว่าง */
-    --foreground: #0a0a0a; /* สีตัวอักษรในโหมดสว่าง */
-}
-
-/* เมื่อมี class .dark ใน <html> */
-.dark {
-    --background: #0a0a0a; /* สีพื้นหลังในโหมดมืด */
-    --foreground: #f2f2f2; /* สีตัวอักษรในโหมดมืด */
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
     background: var(--background);
