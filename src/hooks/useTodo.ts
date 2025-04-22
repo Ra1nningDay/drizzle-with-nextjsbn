@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchTodoList, sendTodo, deleteTodo } from "@/lib/apiTodos";
+import {
+    fetchTodoList,
+    sendTodo,
+    deleteTodo,
+    updateTodo,
+} from "@/lib/apiTodos";
 import { Todo } from "@/types";
+import { toast } from "react-toastify";
 
 export const useTodo = () => {
     // State for input and error
@@ -33,6 +39,18 @@ export const useTodo = () => {
         },
     });
 
+    const updateMutation = useMutation({
+        mutationFn: ({ id, completed }: { id: number; completed: boolean }) =>
+            updateTodo(id, completed),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["todos"] });
+            setMutationError(null);
+        },
+        onError: (error: Error) => {
+            setMutationError(error.message);
+        },
+    });
+
     // Mutation for deleting a todo
     const deleteMutation = useMutation({
         mutationFn: deleteTodo,
@@ -50,12 +68,25 @@ export const useTodo = () => {
             completed: false,
         };
         addMutation.mutate(newTodoItem);
+        toast.success("Add a task successfully!!");
         setNewTodo("");
+    };
+
+    const completedTask = (id: number, completed: boolean) => {
+        updateMutation.mutate({ id, completed });
     };
 
     // Handler for deleting a todo
     const handleDeleteTodo = (id: number) => {
         deleteMutation.mutate(id);
+        toast.error("Delete a task successfully!");
+    };
+
+    const toggleTask = (id: number) => {
+        const updatedTodos = todos?.map((todo: Todo) =>
+            todo.id === id ? { ...todo, isToggle: !todo.isToggle } : todo
+        );
+        queryClient.setQueryData(["todos"], updatedTodos);
     };
 
     // Return everything needed for the UI
@@ -68,5 +99,7 @@ export const useTodo = () => {
         mutationError,
         handleAddTodo,
         handleDeleteTodo,
+        completedTask,
+        toggleTask,
     };
 };

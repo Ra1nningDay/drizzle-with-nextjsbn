@@ -1,5 +1,6 @@
 export interface Todo {
-  id: number;
-  name: string;
-  completed: boolean;
+    id: number;
+    name: string;
+    completed: boolean;
+    isToggle?: boolean;
 }

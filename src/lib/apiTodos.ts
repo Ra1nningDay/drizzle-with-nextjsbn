@@ -16,6 +16,11 @@ export const sendTodo = async (newTodo: Todo) => {
     return res.data;
 };
 
+export const updateTodo = async (id: number, completed: boolean) => {
+    const res = await api.patch(`/todos/${id}`, { completed });
+    return res.data;
+};
+
 export const deleteTodo = async (id: number) => {
     const res = await api.delete(`/todos/${id}`);
     return res.data;

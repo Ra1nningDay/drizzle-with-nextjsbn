@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Moon, Sun, Trash2, Plus, Loader2 } from "lucide-react";
+import { Moon, Sun, Trash2, Plus, Loader2, SquarePen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -25,6 +25,8 @@ export default function Home() {
         handleAddTodo,
         handleDeleteTodo,
         mutationError,
+        completedTask,
+        toggleTask,
     } = useTodo();
 
     useEffect(() => {
@@ -138,20 +140,70 @@ export default function Home() {
                                 {todos?.map((todo: Todo) => (
                                     <li key={todo.id}>
                                         <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                                            <span className="font-medium">
+                                            <span
+                                                className={`font-medium ${
+                                                    todo.completed === false
+                                                        ? ""
+                                                        : "line-through"
+                                                }`}
+                                            >
                                                 {todo.name}
                                             </span>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="cursor-pointer"
-                                                onClick={() =>
-                                                    handleDeleteTodo(todo.id)
-                                                }
-                                                aria-label={`Delete ${todo.name}`}
-                                            >
-                                                <Trash2 className="h-4 w-4 text-destructive" />
-                                            </Button>
+                                            <div className="flex ">
+                                                {todo.isToggle ? (
+                                                    <div className="">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() =>
+                                                                completedTask(
+                                                                    todo.id,
+                                                                    true
+                                                                )
+                                                            }
+                                                            className="cursor-pointer"
+                                                        >
+                                                            ✔
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="cursor-pointer"
+                                                            onClick={() =>
+                                                                toggleTask(
+                                                                    todo.id
+                                                                )
+                                                            }
+                                                        >
+                                                            ❌
+                                                        </Button>
+                                                    </div>
+                                                ) : (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="cursor-pointer"
+                                                        onClick={() =>
+                                                            toggleTask(todo.id)
+                                                        }
+                                                    >
+                                                        <SquarePen />
+                                                    </Button>
+                                                )}
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="cursor-pointer"
+                                                    onClick={() =>
+                                                        handleDeleteTodo(
+                                                            todo.id
+                                                        )
+                                                    }
+                                                    aria-label={`Delete ${todo.name}`}
+                                                >
+                                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                                </Button>
+                                            </div>
                                         </div>
                                         {todos.indexOf(todo) <
                                             todos.length - 1 && (
