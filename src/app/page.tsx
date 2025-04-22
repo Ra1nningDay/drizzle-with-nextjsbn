@@ -1,62 +1,43 @@
 "use client";
 
-import { fetchTodoList, sendTodo, deleteTodo } from "@/lib/apiTodos";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Todo } from "@/types";
-import { useState } from "react";
+import { useTodo } from "@/hooks/useTodo";
+import { useDarkModeStore } from "@/store/storeDarkMode";
+import { useEffect } from "react";
 
 export default function Home() {
-    const [newTodo, setNewTodo] = useState<string>("");
-    const [mutationError, setMutationError] = useState<string | null>(null);
-
-    const queryClient = useQueryClient();
+    const { mode, toggleMode } = useDarkModeStore();
     const {
-        data: todos,
+        todos,
         isLoading,
         error,
-    } = useQuery({
-        queryKey: ["todos"],
-        queryFn: fetchTodoList,
-    });
+        newTodo,
+        setNewTodo,
+        handleAddTodo,
+        handleDeleteTodo,
+        mutationError,
+    } = useTodo();
 
-    const addMutation = useMutation({
-        mutationFn: sendTodo,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["todos"] });
-            setMutationError(null);
-        },
-        onError: (error: Error) => {
-            setMutationError(error.message);
-        },
-    });
+    useEffect(() => {
+        if (mode === "darkMode") {
+            document.body.classList.add("dark");
+        } else {
+            document.body.classList.remove("dark");
+        }
+    }, [mode]);
 
-    const deleteMutation = useMutation({
-        mutationFn: deleteTodo,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["todos"] });
-        },
-    });
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
-    const handleAddTodo = () => {
-        if (!newTodo.trim()) return;
-        const newTodoItem: Todo = {
-            id: Date.now(), // ควรเปลี่ยนเป็น UUID หรือให้ backend จัดการ
-            name: newTodo,
-            completed: false,
-        };
-        addMutation.mutate(newTodoItem);
-        setNewTodo("");
-    };
-
-    const handleDeleteTodo = (id: number) => {
-        deleteMutation.mutate(id);
-    };
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
-
+    if (error) {
+        return <div>Error fetching todos: {error.message}</div>;
+    }
     return (
-        <>
+        <div className="min-h-screen p-4">
+            <button onClick={toggleMode} className="cursor-pointer border-1">
+                {mode === "darkMode" ? "Light Mode" : "Dark Mode"}
+            </button>
             <h1>Todo List</h1>
 
             <input
@@ -83,6 +64,6 @@ export default function Home() {
                     </li>
                 ))}
             </ul>
-        </>
+        </div>
     );
 }
